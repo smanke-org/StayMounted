@@ -34,7 +34,13 @@ enum UpdateController {
         Task { @MainActor in
             let current = AppInfo.version
             do {
-                let release = try await fetchLatestRelease()
+                // No release published yet (or the repository doesn't exist yet) means there
+                // is nothing newer: that is "up to date", not a failure.
+                guard let release = try await fetchLatestRelease() else {
+                    Diagnostics.note("update check: no published release")
+                    if !silent { present(.upToDate(current: current)) }
+                    return
+                }
                 Diagnostics.note("update check: latest=\(release.version) current=\(current) "
                                  + "newer=\(isNewer(release.version, than: current))")
                 guard isNewer(release.version, than: current) else {
@@ -96,7 +102,7 @@ enum UpdateController {
         let downloadURL: URL
     }
 
-    private static func fetchLatestRelease() async throws -> Release {
+    private static func fetchLatestRelease() async throws -> Release? {
         var request = URLRequest(url: URL(string: "https://api.github.com/repos/\(repository)/releases/latest")!)
         request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
         // GitHub rejects API requests without one.
@@ -109,7 +115,7 @@ enum UpdateController {
         // A repository with no published releases answers 404, which is not the same
         // thing as being offline and should not be reported as a network problem.
         if http.statusCode == 404 {
-            throw fail("There are no published releases to update to yet.")
+            return nil
         }
         guard http.statusCode == 200 else {
             throw fail("GitHub returned an error (\(http.statusCode)) while checking for updates.")
