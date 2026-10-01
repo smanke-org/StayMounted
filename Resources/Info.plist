@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDisplayName</key>
+	<string>StayMounted</string>
+	<key>CFBundleExecutable</key>
+	<string>StayMounted</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.smanke.StayMounted</string>
+	<key>CFBundleName</key>
+	<string>StayMounted</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.4</string>
+	<key>CFBundleVersion</key>
+	<string>1.0.4</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>26.0</string>
+	<key>LSUIElement</key>
+	<true/>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_smb._tcp</string>
+	</array>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2026 Steve Manke</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>StayMounted checks that your file servers are answering on the local network before it mounts their shares, so it never shows errors while you are away.</string>
+</dict>
+</plist>
