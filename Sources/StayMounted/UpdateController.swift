@@ -18,7 +18,7 @@ import AppKit
 ///
 /// A failure at any step aborts the update and leaves the installed app untouched.
 enum UpdateController {
-    private static let repository = "smanke/StayMounted"
+    private static let repository = "smanke-org/StayMounted"
 
     enum UpdateOutcome {
         case upToDate(current: String)

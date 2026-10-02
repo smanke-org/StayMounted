@@ -3,7 +3,7 @@
 A macOS menu bar app that keeps your SMB file shares mounted. It mounts them when you log in,
 remounts them after sleep or a network drop, and brings them back if they are ejected.
 
-[**Download the latest release**](https://github.com/smanke/StayMounted/releases/latest/download/StayMounted.dmg)
+[**Download the latest release**](https://github.com/smanke-org/StayMounted/releases/latest/download/StayMounted.dmg)
 
 ## How it works
 
