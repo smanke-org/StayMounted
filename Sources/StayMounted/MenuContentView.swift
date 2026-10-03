@@ -208,6 +208,10 @@ struct MenuContentView: View {
                     launchAtLogin.openLoginItemsSettings()
                 }
             }
+            #if !APPSTORE
+            // The App Store updates the store build itself, so this only exists here.
+            MenuToggle(title: "Check for Updates at Launch", isOn: $settings.checkForUpdatesAtLaunch)
+            #endif
 
             Divider().padding(.vertical, 6)
 
