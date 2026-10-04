@@ -11,10 +11,15 @@ import Observation
 final class AppModel {
     let keeper = MountKeeper()
     let launchAtLogin = LaunchAtLogin()
+    let launcher: AppLauncher
     @ObservationIgnored private let gracePanel = EjectGracePanel()
     @ObservationIgnored private var previewWindow: NSWindow?
 
     init() {
+        launcher = AppLauncher(keeper: keeper)
+        // Before start(): shares already mounted at launch report as just mounted.
+        keeper.onShareMounted = { [launcher] share in launcher.shareMounted(share) }
+        LaunchItemsWindow.shared.launcher = launcher
         keeper.onHandEject = { [weak self] shares in self?.gracePanel.present(shares) }
         gracePanel.onRemount = { [weak self] ids in self?.keeper.remountAfterEject(ids) }
         gracePanel.onKeepEjected = { [weak self] ids in self?.keeper.keepEjected(ids) }

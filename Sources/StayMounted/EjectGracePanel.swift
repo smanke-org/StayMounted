@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import StayMountedKit
 
 /// Shown when a watched share is ejected while the network is fine — which almost always
 /// means by hand. Remounting immediately would make Eject look broken, so this counts down

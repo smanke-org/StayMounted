@@ -62,12 +62,18 @@ final class MountKeeper {
 
     /// Asked to confirm a remount after a hand eject. Called with the shares concerned.
     @ObservationIgnored var onHandEject: (([WatchedShare]) -> Void)?
+    /// A watched share has just appeared in the mount table, by any route: StayMounted,
+    /// Finder, or already mounted when the app started (which is how login counts).
+    @ObservationIgnored var onShareMounted: ((WatchedShare) -> Void)?
 
     @ObservationIgnored private let settings = AppSettings.shared
     @ObservationIgnored private var inFlight: Set<UUID> = []
     @ObservationIgnored private var failures: [UUID: Int] = [:]
     @ObservationIgnored private var nextAttempt: [UUID: Date] = [:]
     @ObservationIgnored private var lastMountPoint: [UUID: String] = [:]
+    /// Watched shares that were mounted at the last refresh. Starts empty, so shares
+    /// already mounted at launch count as just mounted.
+    @ObservationIgnored private var mountedIDs: Set<UUID> = []
     @ObservationIgnored private var lastDisruption: Date = .distantPast
     @ObservationIgnored private var networkUp = true
     @ObservationIgnored private var lastPathSignature: String?
@@ -191,9 +197,25 @@ final class MountKeeper {
 
     func refreshMounts() {
         mounts = MountTable.smbMounts()
+        var nowMounted: Set<UUID> = []
         for share in settings.shares {
-            if let mount = mount(for: share) { lastMountPoint[share.id] = mount.mountPoint }
+            if let mount = mount(for: share) {
+                lastMountPoint[share.id] = mount.mountPoint
+                nowMounted.insert(share.id)
+            }
         }
+        let appeared = nowMounted.subtracting(mountedIDs)
+        mountedIDs = nowMounted
+        for share in settings.shares where appeared.contains(share.id) {
+            onShareMounted?(share)
+        }
+    }
+
+    /// Reads the mount table afresh without touching `mounts`, so it can be asked from
+    /// inside a mount callback without raising another one.
+    func isMountedNow(_ id: UUID) -> Bool {
+        guard let key = settings.shares.first(where: { $0.id == id })?.share?.key else { return false }
+        return MountTable.smbMounts().contains { $0.key == key }
     }
 
     // MARK: - Editing
@@ -226,6 +248,8 @@ final class MountKeeper {
         failures[share.id] = nil
         nextAttempt[share.id] = nil
         ejectPending.remove(share.id)
+        mountedIDs.remove(share.id)
+        LaunchItemsWindow.shared.close(share.id)
         Diagnostics.note("stopped watching \(share.displayName)")
     }
 

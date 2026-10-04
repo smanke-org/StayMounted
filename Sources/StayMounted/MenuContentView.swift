@@ -276,6 +276,14 @@ private struct ShareRow: View {
         }
     }
 
+    private var appsText: String? {
+        switch share.apps.count {
+        case 0: nil
+        case 1: "opens 1 app"
+        case let count: "opens \(count) apps"
+        }
+    }
+
     private var colour: Color {
         switch status {
         case .mounted: .green
@@ -303,7 +311,7 @@ private struct ShareRow: View {
             VStack(alignment: .leading, spacing: 1) {
                 Text(share.displayName)
                     .lineLimit(1)
-                Text([share.share?.displayHost, statusText].compactMap { $0 }.joined(separator: " · "))
+                Text([share.share?.displayHost, statusText, appsText].compactMap { $0 }.joined(separator: " · "))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -334,6 +342,8 @@ private struct ShareRow: View {
                     Button("Mount Now") { keeper.mountNow(share, interactive: false) }
                     Button("Sign In…") { keeper.mountNow(share, interactive: true) }
                 }
+                Divider()
+                Button("Open When Mounted…") { LaunchItemsWindow.shared.show(share) }
                 Divider()
                 if share.paused {
                     Button("Resume Keeping Mounted") { keeper.setPaused(share, false) }

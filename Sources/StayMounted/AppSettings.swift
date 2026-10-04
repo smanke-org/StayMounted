@@ -2,19 +2,6 @@ import AppKit
 import Observation
 import StayMountedKit
 
-/// A share the user asked to keep mounted.
-struct WatchedShare: Codable, Identifiable, Hashable {
-    var id = UUID()
-    /// The address as given, including any user name, so NetAuth finds the right
-    /// Keychain item.
-    var address: String
-    /// Not remounted while paused. Set by "Keep ejected", or from the menu.
-    var paused = false
-
-    var share: ShareURL? { ShareURL(parsing: address) }
-    var displayName: String { share?.share ?? address }
-}
-
 @Observable
 @MainActor
 final class AppSettings {

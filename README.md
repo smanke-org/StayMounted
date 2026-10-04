@@ -19,6 +19,10 @@ remounts them after sleep or a network drop, and brings them back if they are ej
 - **Respects Eject.** If you eject a share yourself, a small panel counts down ten seconds
   before remounting it, with a *Keep ejected* button that pauses that share until you resume
   it. Shares lost to sleep or a network change come back without asking.
+- **Open apps when a share mounts.** Choose *Open When Mounted…* from a share's ⋯ menu and
+  add apps. They open, in order, every time the share mounts: at login, and again after sleep
+  or a network drop. Apps that are already open are left alone. Each app can open hidden, and
+  each share can wait a few seconds before opening its apps.
 - **Pause anytime.** Pause a single share, or all of them, from the menu.
 
 Requires macOS 26 or later.
