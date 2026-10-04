@@ -1,4 +1,4 @@
-import Foundation
+import AppKit
 import Observation
 import StayMountedKit
 
@@ -31,6 +31,25 @@ final class AppSettings {
 
     /// Look for a newer release shortly after launch. Silent unless there is something to
     /// install. Unused in the App Store build, which the store updates.
+    /// A Dock icon whose right-click menu opens Settings. Off by default.
+    var showInDock: Bool = AppPresence.showInDock {
+        didSet {
+            guard showInDock != AppPresence.showInDock else { return }
+            AppPresence.showInDock = showInDock
+            AppPresence.applyDock(keepInFront: NSApp.keyWindow)
+        }
+    }
+
+    /// The menu bar icon. On by default; may be off together with the Dock icon.
+    /// Bound to the MenuBarExtra, so Command-dragging the icon off the menu bar
+    /// turns this off too.
+    var showInMenuBar: Bool = AppPresence.showInMenuBar {
+        didSet {
+            guard showInMenuBar != AppPresence.showInMenuBar else { return }
+            AppPresence.showInMenuBar = showInMenuBar
+        }
+    }
+
     var checkForUpdatesAtLaunch: Bool { didSet { defaults.set(checkForUpdatesAtLaunch, forKey: "checkForUpdatesAtLaunch") } }
 
     /// A version the user chose to skip; the launch check stays quiet about it.

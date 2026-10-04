@@ -22,6 +22,10 @@ remounts them after sleep or a network drop, and brings them back if they are ej
 - **Pause anytime.** Pause a single share, or all of them, from the menu.
 
 Requires macOS 26 or later.
+- **Dock, menu bar, both or neither.** **Show in Dock** and **Show in Menu Bar** in the menu's
+  footer pick where StayMounted appears. Right-click the Dock icon for **Settings…**, which
+  opens the menu's panel in a window. With both off it keeps working with no icon; open it
+  again from Applications or Spotlight to get the panel back.
 
 ## Building
 

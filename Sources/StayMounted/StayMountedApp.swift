@@ -2,15 +2,33 @@ import SwiftUI
 
 @main
 struct StayMountedApp: App {
-    @State private var model = AppModel()
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    @State private var model: AppModel
+    @State private var settings = AppSettings.shared
+
+    init() {
+        let model = AppModel()
+        _model = State(initialValue: model)
+        SettingsWindow.shared.makeContent = {
+            AnyView(MenuContentView(keeper: model.keeper, launchAtLogin: model.launchAtLogin))
+        }
+    }
 
     var body: some Scene {
-        MenuBarExtra {
+        // The panel can remove the menu bar icon; the app then lives in the Dock, or nowhere.
+        MenuBarExtra(isInserted: $settings.showInMenuBar) {
             MenuContentView(keeper: model.keeper, launchAtLogin: model.launchAtLogin)
         } label: {
             MenuBarLabel(keeper: model.keeper)
         }
         .menuBarExtraStyle(.window)
+        .commands {
+            // The app menu, while there is a Dock icon: Settings… opens the panel in a window.
+            CommandGroup(replacing: .appSettings) {
+                Button("Settings…") { SettingsWindow.shared.show() }
+                    .keyboardShortcut(",", modifiers: .command)
+            }
+        }
     }
 }
 

@@ -212,6 +212,16 @@ struct MenuContentView: View {
             // The App Store updates the store build itself, so this only exists here.
             MenuToggle(title: "Check for Updates at Launch", isOn: $settings.checkForUpdatesAtLaunch)
             #endif
+            MenuToggle(title: "Show in Dock", isOn: $settings.showInDock)
+            MenuToggle(title: "Show in Menu Bar", isOn: $settings.showInMenuBar)
+            if !settings.showInDock && !settings.showInMenuBar {
+                Text(AppPresence.hiddenEverywhereNote(appName: "StayMounted", settingsName: "this panel in a window"))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+            }
 
             Divider().padding(.vertical, 6)
 
