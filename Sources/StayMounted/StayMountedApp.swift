@@ -7,6 +7,9 @@ struct StayMountedApp: App {
     @State private var settings = AppSettings.shared
 
     init() {
+        #if !APPSTORE
+        AppModel.newInstall = SettingsSync.domainIsEmpty()
+        #endif
         let model = AppModel()
         _model = State(initialValue: model)
         SettingsWindow.shared.makeContent = {

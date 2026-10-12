@@ -57,12 +57,29 @@ Requires macOS 26 or later. Signed with Developer ID and notarized by Apple.
 
 ## Updates
 
-StayMounted checks GitHub for a new release shortly after it starts. If there is one, the
-menu shows *Update to …*, and it installs only when you click that item. You can also choose
-*Check for Updates…* at any time, or turn off *Check for Updates at Launch*.
+StayMounted checks GitHub for a new release shortly after it starts and every 30 minutes.
+*When an Update Is Available* in the menu decides what happens:
+
+- **Ask me first** (the default): a notification and *Update to …* in the menu; nothing
+  installs until you click it.
+- **Install automatically**: the update is downloaded and checked right away, then installed
+  once no share is being mounted, no eject is waiting for an answer, no app is presenting or
+  keeping the display awake, and the Mac hasn't been used for 2 minutes.
+- **Don't check**: *Check for Updates…* still works.
 
 Before installing, StayMounted makes sure the download is signed by the same developer and
 notarized by Apple. It updates the app in place, so your settings and permissions carry over.
+
+## Settings sync
+
+Turn on *Sync Settings with Other Macs* in the menu and where StayMounted appears, *Ask
+Before Remounting After Eject* and the update choice follow you to every Mac on the same
+iCloud account, through `iCloud Drive/StayMounted/Settings.plist`. Your watched shares, the
+apps they open and their passwords stay on each Mac. A brand-new install that finds this
+file turns sync on and starts from your settings.
+
+Updates and settings sync are only in the GitHub build; the App Store build is updated by the
+App Store, and its sandbox has no access to iCloud Drive.
 
 ## Building
 

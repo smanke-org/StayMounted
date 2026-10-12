@@ -49,6 +49,13 @@ final class AppSettings {
 
     private let defaults = UserDefaults.standard
 
+    /// Re-reads the synced settings after another Mac's were adopted.
+    func reload() {
+        confirmAfterEject = defaults.bool(forKey: "confirmAfterEject")
+        if showInDock != AppPresence.showInDock { showInDock = AppPresence.showInDock }
+        if showInMenuBar != AppPresence.showInMenuBar { showInMenuBar = AppPresence.showInMenuBar }
+    }
+
     private init() {
         defaults.register(defaults: [
             "pausedAll": false,

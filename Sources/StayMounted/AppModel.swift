@@ -27,20 +27,25 @@ final class AppModel {
         Diagnostics.note("launch \(AppInfo.displayVersion) from \(Bundle.main.bundlePath)")
         keeper.start()
         launchAtLogin.enableOnFirstRun()
-        scheduleLaunchUpdateCheck()
+        #if !APPSTORE
+        // An automatic update must not restart StayMounted in the middle of a mount or an eject.
+        let keeper = self.keeper
+        let gracePanel = self.gracePanel
+        AutoUpdater.shared.appBusyReason = {
+            if keeper.phases.values.contains(where: { $0 == .mounting || $0 == .checking }) { return "a share is being mounted" }
+            if !keeper.ejectPending.isEmpty || gracePanel.isShowing { return "an eject is waiting for an answer" }
+            return nil
+        }
+        SettingsSync.shared.onApply = { AppSettings.shared.reload() }
+        if Self.newInstall { SettingsSync.shared.adoptOnNewInstall() }
+        SettingsSync.shared.start()
+        AutoUpdater.shared.start()
+        #endif
         openPreviewWindowIfRequested()
     }
 
-    /// Deferred so startup is not waiting on the network, and silent unless there is
-    /// something to offer.
-    private func scheduleLaunchUpdateCheck() {
-        #if !APPSTORE
-        guard AppSettings.shared.checkForUpdatesAtLaunch else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 6) {
-            UpdateController.checkForUpdates(silent: true)
-        }
-        #endif
-    }
+    /// Set by StayMountedApp.init before anything is stored: an empty domain means a new install.
+    static var newInstall = false
 
     /// Development affordance: STAYMOUNTED_UI_PREVIEW=1 puts the menu's contents in an
     /// ordinary window, so the UI can be seen and driven without the menu bar.

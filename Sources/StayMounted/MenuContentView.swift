@@ -8,6 +8,10 @@ struct MenuContentView: View {
 
     @State private var settings = AppSettings.shared
     @State private var updates = UpdateAvailability.shared
+    #if !APPSTORE
+    @ObservedObject private var sync = SettingsSync.shared
+    @ObservedObject private var updater = AutoUpdater.shared
+    #endif
     @State private var newAddress = ""
     @State private var addError: String?
 
@@ -209,8 +213,25 @@ struct MenuContentView: View {
                 }
             }
             #if !APPSTORE
-            // The App Store updates the store build itself, so this only exists here.
-            MenuToggle(title: "Check for Updates at Launch", isOn: $settings.checkForUpdatesAtLaunch)
+            // The App Store updates the store build itself, and the sandbox can't reach
+            // iCloud Drive, so these only exist here.
+            MenuToggle(title: "Sync Settings with Other Macs", isOn: $sync.isEnabled)
+            HStack {
+                Text("When an Update Is Available").font(.body)
+                Spacer()
+                Picker("", selection: $updater.policy) {
+                    ForEach(UpdatePolicy.allCases, id: \.self) { Text($0.title).tag($0) }
+                }
+                .labelsHidden()
+                .fixedSize()
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
+            if updater.policy != .off && !updater.notificationsAllowed {
+                MenuButton(title: "Turn On Notifications for Update News…", systemImage: "bell.slash") {
+                    AutoUpdater.openNotificationSettings()
+                }
+            }
             #endif
             MenuToggle(title: "Show in Dock", isOn: $settings.showInDock)
             MenuToggle(title: "Show in Menu Bar", isOn: $settings.showInMenuBar)
@@ -226,7 +247,11 @@ struct MenuContentView: View {
             Divider().padding(.vertical, 6)
 
             #if !APPSTORE
-            if let pending = updates.pending {
+            if let staged = updater.staged {
+                MenuButton(title: "Update to \(staged.version) Now", systemImage: "arrow.down.circle.fill") {
+                    updater.installNow()
+                }
+            } else if let pending = updates.pending {
                 MenuButton(title: "Update to \(pending)…", systemImage: "arrow.down.circle.fill") {
                     UpdateController.checkForUpdates()
                 }

@@ -15,6 +15,8 @@ final class EjectGracePanel {
     var onKeepEjected: ((Set<UUID>) -> Void)?
 
     private var panel: NSPanel?
+    /// The countdown is on screen, waiting for the user's answer.
+    var isShowing: Bool { panel != nil }
     private var countdown: Task<Void, Never>?
     private var pending: Set<UUID> = []
 
