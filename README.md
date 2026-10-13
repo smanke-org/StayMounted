@@ -38,7 +38,7 @@ Requires macOS 26 or later. Signed with Developer ID and notarized by Apple.
   being off your home network or VPN never produces error dialogs. It tries again as soon as
   the network changes.
 - **Starts at login.** StayMounted turns on *Open at Login* the first time it runs from
-  Applications, so your shares are back after every restart. You can turn it off in the menu.
+  Applications, so your shares are back after every restart. You can turn it off in Settings.
 
 ## Features
 
@@ -50,30 +50,33 @@ Requires macOS 26 or later. Signed with Developer ID and notarized by Apple.
   before remounting it. Its *Keep ejected* button pauses that share until you resume it.
   Shares lost to sleep or a network change come back without asking.
 - **Pause anytime.** Pause a single share, or all of them, from the menu.
-- **Dock, menu bar, both or neither.** **Show in Dock** and **Show in Menu Bar** in the menu's
-  footer pick where StayMounted appears. Right-click the Dock icon for **Settings…**, which
-  opens the menu's panel in a window. With both off, StayMounted keeps working with no icon.
-  Open it again from Applications or Spotlight to get the panel back.
+- **Settings in their own window.** Choose **Settings…** from the menu (or press ⌘, while
+  StayMounted has a Dock icon) for Open at Login, asking before remounting after an eject,
+  where StayMounted appears, settings sync and updates.
+- **Dock, menu bar, both or neither.** **Show in Dock** and **Show in menu bar** in Settings
+  pick where StayMounted appears. Right-click the Dock icon for **Shares…** or **Settings…**.
+  With the menu bar icon off, clicking the Dock icon, or opening StayMounted again from
+  Applications or Spotlight, shows your shares in a window.
 
 ## Updates
 
 StayMounted checks GitHub for a new release shortly after it starts and every 30 minutes.
-*When an Update Is Available* in the menu decides what happens:
+*When an update is available* in Settings decides what happens:
 
 - **Ask me first** (the default): a notification and *Update to …* in the menu; nothing
   installs until you click it.
 - **Install automatically**: the update is downloaded and checked right away, then installed
   once no share is being mounted, no eject is waiting for an answer, no app is presenting or
   keeping the display awake, and the Mac hasn't been used for 2 minutes.
-- **Don't check**: *Check for Updates…* still works.
+- **Don't check**: *Check for Updates…* in the menu and *Check Now* in Settings still work.
 
 Before installing, StayMounted makes sure the download is signed by the same developer and
 notarized by Apple. It updates the app in place, so your settings and permissions carry over.
 
 ## Settings sync
 
-Turn on *Sync Settings with Other Macs* in the menu and where StayMounted appears, *Ask
-Before Remounting After Eject* and the update choice follow you to every Mac on the same
+Turn on *Sync settings with your other Macs* in Settings and where StayMounted appears,
+*Ask before remounting a share I ejected* and the update choice follow you to every Mac on the same
 iCloud account, through `iCloud Drive/StayMounted/Settings.plist`. Your watched shares, the
 apps they open and their passwords stay on each Mac. A brand-new install that finds this
 file turns sync on and starts from your settings.

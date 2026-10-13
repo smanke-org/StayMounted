@@ -16,8 +16,6 @@ final class AppSettings {
     /// likely by hand. Off remounts at once, as if it had dropped.
     var confirmAfterEject: Bool { didSet { defaults.set(confirmAfterEject, forKey: "confirmAfterEject") } }
 
-    /// Look for a newer release shortly after launch. Silent unless there is something to
-    /// install. Unused in the App Store build, which the store updates.
     /// A Dock icon whose right-click menu opens Settings. Off by default.
     var showInDock: Bool = AppPresence.showInDock {
         didSet {
@@ -37,6 +35,7 @@ final class AppSettings {
         }
     }
 
+    /// The on/off update switch from before UpdatePolicy; read once to migrate it.
     var checkForUpdatesAtLaunch: Bool { didSet { defaults.set(checkForUpdatesAtLaunch, forKey: "checkForUpdatesAtLaunch") } }
 
     /// A version the user chose to skip; the launch check stays quiet about it.

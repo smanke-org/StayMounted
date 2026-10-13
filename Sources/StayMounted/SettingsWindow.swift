@@ -1,17 +1,22 @@
 import AppKit
 import SwiftUI
 
-/// The menu bar panel in an ordinary window, so the Dock icon's menu and a
-/// relaunch from Applications can show it. It holds the shares as well as the
-/// settings, because with the menu bar icon hidden this window is the only way
-/// to reach either.
+/// A SwiftUI view in an ordinary AppKit window. SwiftUI's own `Settings` scene can't be
+/// opened from AppKit (the Dock menu, a relaunch), so both windows are hosted here.
 @MainActor
 final class SettingsWindow {
-    static let shared = SettingsWindow()
+    /// StayMounted Settings: the preferences.
+    static let shared = SettingsWindow(title: "StayMounted Settings")
+    /// The menu bar panel in a window, for the Dock icon and for when the menu bar
+    /// icon is hidden and this is the only way to reach the shares.
+    static let shares = SettingsWindow(title: "StayMounted")
 
-    /// Set once at launch by the app, which owns the objects Settings shows.
+    /// Set once at launch by the app, which owns the objects the window shows.
     var makeContent: (() -> AnyView)?
+    private let title: String
     private var window: NSWindow?
+
+    private init(title: String) { self.title = title }
 
     func show() {
         if window == nil, let makeContent {
@@ -20,7 +25,7 @@ final class SettingsWindow {
             // no natural height and the window opens as a sliver.
             hosting.sizingOptions = [.preferredContentSize]
             let window = NSWindow(contentViewController: hosting)
-            window.title = "StayMounted Settings"
+            window.title = title
             window.styleMask = [.titled, .closable]
             window.isReleasedWhenClosed = false
             window.center()
@@ -41,17 +46,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     /// The Dock icon's right-click menu, when "Show in Dock" is on.
     func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
-        AppPresence.dockMenu(title: "Settings…", target: self, action: #selector(showSettings))
+        let menu = AppPresence.dockMenu(title: "Settings…", target: self, action: #selector(showSettings))
+        let shares = NSMenuItem(title: "Shares…", action: #selector(showShares), keyEquivalent: "")
+        shares.target = self
+        menu.insertItem(shares, at: 0)
+        return menu
     }
 
     /// Clicking the Dock icon, or opening the app again from Applications or
-    /// Spotlight, opens Settings — the way back when both icons are hidden.
+    /// Spotlight. With the menu bar icon hidden that brings up the shares (whose
+    /// window has Settings… too) — the way back when both icons are hidden.
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        showSettings()
+        if AppPresence.showInMenuBar { showSettings() } else { showShares() }
         return true
     }
 
     @objc func showSettings() {
         SettingsWindow.shared.show()
+    }
+
+    @objc func showShares() {
+        SettingsWindow.shares.show()
     }
 }

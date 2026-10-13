@@ -58,7 +58,7 @@ final class AppModel {
             defer: false
         )
         window.title = "StayMounted Preview"
-        window.contentView = NSHostingView(rootView: MenuContentView(keeper: keeper, launchAtLogin: launchAtLogin))
+        window.contentView = NSHostingView(rootView: MenuContentView(keeper: keeper))
         window.center()
         previewWindow = window
         DispatchQueue.main.async {

@@ -4,12 +4,10 @@ import StayMountedKit
 
 struct MenuContentView: View {
     let keeper: MountKeeper
-    let launchAtLogin: LaunchAtLogin
 
     @State private var settings = AppSettings.shared
     @State private var updates = UpdateAvailability.shared
     #if !APPSTORE
-    @ObservedObject private var sync = SettingsSync.shared
     @ObservedObject private var updater = AutoUpdater.shared
     #endif
     @State private var newAddress = ""
@@ -48,10 +46,7 @@ struct MenuContentView: View {
                 .padding(.bottom, 6)
         }
         .frame(width: 330)
-        .onAppear {
-            keeper.refreshMounts()
-            launchAtLogin.refresh()
-        }
+        .onAppear { keeper.refreshMounts() }
     }
 
     // MARK: - Header
@@ -202,48 +197,6 @@ struct MenuContentView: View {
                 get: { settings.pausedAll },
                 set: { keeper.setPausedAll($0) }
             ))
-            MenuToggle(title: "Ask Before Remounting After Eject", isOn: $settings.confirmAfterEject)
-            MenuToggle(title: "Open at Login", isOn: Binding(
-                get: { launchAtLogin.isEnabled },
-                set: { launchAtLogin.set($0) }
-            ))
-            if launchAtLogin.needsApproval {
-                MenuButton(title: "Allow in Login Items Settings…", systemImage: "exclamationmark.triangle") {
-                    launchAtLogin.openLoginItemsSettings()
-                }
-            }
-            #if !APPSTORE
-            // The App Store updates the store build itself, and the sandbox can't reach
-            // iCloud Drive, so these only exist here.
-            MenuToggle(title: "Sync Settings with Other Macs", isOn: $sync.isEnabled)
-            HStack {
-                Text("When an Update Is Available").font(.body)
-                Spacer()
-                Picker("", selection: $updater.policy) {
-                    ForEach(UpdatePolicy.allCases, id: \.self) { Text($0.title).tag($0) }
-                }
-                .labelsHidden()
-                .fixedSize()
-            }
-            .padding(.horizontal, 8)
-            .padding(.vertical, 3)
-            if updater.policy != .off && !updater.notificationsAllowed {
-                MenuButton(title: "Turn On Notifications for Update News…", systemImage: "bell.slash") {
-                    AutoUpdater.openNotificationSettings()
-                }
-            }
-            #endif
-            MenuToggle(title: "Show in Dock", isOn: $settings.showInDock)
-            MenuToggle(title: "Show in Menu Bar", isOn: $settings.showInMenuBar)
-            if !settings.showInDock && !settings.showInMenuBar {
-                Text(AppPresence.hiddenEverywhereNote(appName: "StayMounted", settingsName: "this panel in a window"))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 3)
-            }
-
             Divider().padding(.vertical, 6)
 
             #if !APPSTORE
@@ -261,6 +214,9 @@ struct MenuContentView: View {
                 }
             }
             #endif
+            MenuButton(title: "Settings…", systemImage: nil) {
+                SettingsWindow.shared.show()
+            }
             MenuButton(title: "Open Log", systemImage: nil) {
                 let log = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)[0]
                     .appending(path: "Logs/StayMounted.log")

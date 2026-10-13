@@ -13,20 +13,23 @@ struct StayMountedApp: App {
         let model = AppModel()
         _model = State(initialValue: model)
         SettingsWindow.shared.makeContent = {
-            AnyView(MenuContentView(keeper: model.keeper, launchAtLogin: model.launchAtLogin))
+            AnyView(SettingsView(launchAtLogin: model.launchAtLogin))
+        }
+        SettingsWindow.shares.makeContent = {
+            AnyView(MenuContentView(keeper: model.keeper))
         }
     }
 
     var body: some Scene {
         // The panel can remove the menu bar icon; the app then lives in the Dock, or nowhere.
         MenuBarExtra(isInserted: $settings.showInMenuBar) {
-            MenuContentView(keeper: model.keeper, launchAtLogin: model.launchAtLogin)
+            MenuContentView(keeper: model.keeper)
         } label: {
             MenuBarLabel(keeper: model.keeper)
         }
         .menuBarExtraStyle(.window)
         .commands {
-            // The app menu, while there is a Dock icon: Settings… opens the panel in a window.
+            // The app menu, while there is a Dock icon.
             CommandGroup(replacing: .appSettings) {
                 Button("Settings…") { SettingsWindow.shared.show() }
                     .keyboardShortcut(",", modifiers: .command)
