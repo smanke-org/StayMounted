@@ -54,6 +54,5 @@ struct SettingsView: View {
         .formStyle(.grouped)
         .onAppear { launchAtLogin.refresh() }
         .frame(width: 460)
-        .fixedSize(horizontal: false, vertical: true)
     }
 }

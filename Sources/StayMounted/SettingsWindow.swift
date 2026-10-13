@@ -20,13 +20,22 @@ final class SettingsWindow {
 
     func show() {
         if window == nil, let makeContent {
-            let hosting = NSHostingController(rootView: makeContent())
-            // The window takes the view's own size; without this a grouped Form has
-            // no natural height and the window opens as a sliver.
-            hosting.sizingOptions = [.preferredContentSize]
+            let content = makeContent()
+            // The view's natural size, with its height capped to the screen and the
+            // content scrolling inside. Letting SwiftUI size the window to the content's
+            // full height crashed once it grew taller than the screen: AppKit clamped the
+            // window, SwiftUI asked to grow again, and AppKit aborted the
+            // update-constraints loop.
+            let natural = NSHostingView(rootView: content).fittingSize
+            let hosting = NSHostingController(rootView: content.frame(maxHeight: .infinity))
+            hosting.sizingOptions = []
             let window = NSWindow(contentViewController: hosting)
             window.title = title
-            window.styleMask = [.titled, .closable]
+            window.styleMask = [.titled, .closable, .resizable]
+            let available = (NSScreen.main?.visibleFrame.height ?? 800) - 80
+            window.setContentSize(NSSize(width: natural.width, height: min(max(natural.height, 200), available)))
+            window.contentMinSize = NSSize(width: natural.width, height: 200)
+            window.contentMaxSize = NSSize(width: natural.width, height: CGFloat.greatestFiniteMagnitude)
             window.isReleasedWhenClosed = false
             window.center()
             self.window = window

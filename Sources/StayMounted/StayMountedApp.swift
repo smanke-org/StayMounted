@@ -16,7 +16,8 @@ struct StayMountedApp: App {
             AnyView(SettingsView(launchAtLogin: model.launchAtLogin))
         }
         SettingsWindow.shares.makeContent = {
-            AnyView(MenuContentView(keeper: model.keeper))
+            // Scrolls once there are more shares than fit on the screen.
+            AnyView(ScrollView { MenuContentView(keeper: model.keeper) })
         }
     }
 
