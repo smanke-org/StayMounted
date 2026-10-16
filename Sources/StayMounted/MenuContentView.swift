@@ -217,6 +217,13 @@ struct MenuContentView: View {
             MenuButton(title: "Settings…", systemImage: nil) {
                 SettingsWindow.shared.show()
             }
+            MenuButton(title: "About StayMounted", systemImage: nil) {
+                NSApp.activate(ignoringOtherApps: true)
+                NSApp.orderFrontStandardAboutPanel(nil)
+            }
+            MenuButton(title: "Our other apps…", systemImage: nil) {
+                if let url = URL(string: "https://stevemanke.com/") { NSWorkspace.shared.open(url) }
+            }
             MenuButton(title: "Open Log", systemImage: nil) {
                 let log = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)[0]
                     .appending(path: "Logs/StayMounted.log")
