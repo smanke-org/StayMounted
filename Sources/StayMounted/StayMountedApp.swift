@@ -19,6 +19,23 @@ struct StayMountedApp: App {
             // Scrolls once there are more shares than fit on the screen.
             AnyView(ScrollView { MenuContentView(keeper: model.keeper) })
         }
+        AppDelegate.onURL = { url in
+            let keeper = model.keeper
+            switch url.host {
+            case "mount-all":
+                // Every watched share that's simply missing; paused ones stay paused.
+                for share in AppSettings.shared.shares {
+                    switch keeper.status(of: share) {
+                    case .notMounted, .waitingForServer, .failed: keeper.mountNow(share, interactive: false)
+                    default: break
+                    }
+                }
+            case "pause":
+                keeper.setPausedAll(!AppSettings.shared.pausedAll)
+            default:
+                break
+            }
+        }
     }
 
     var body: some Scene {

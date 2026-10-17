@@ -16,6 +16,17 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.1.6</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>StayMounted</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>staymounted</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1.1.6</string>
 	<key>LSApplicationCategoryType</key>
@@ -32,5 +43,44 @@
 	<string>Copyright © 2026 Steve Manke</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>StayMounted checks that your file servers are answering on the local network before it mounts their shares, so it never shows errors while you are away.</string>
+	<key>ToolHUDActions</key>
+	<array>
+		<dict>
+			<key>activates</key>
+			<false/>
+			<key>id</key>
+			<string>mount-all</string>
+			<key>shortTitle</key>
+			<string>Mount shares</string>
+			<key>symbol</key>
+			<string>externaldrive.connected.to.line.below</string>
+			<key>title</key>
+			<string>Mount missing shares now</string>
+		</dict>
+		<dict>
+			<key>activates</key>
+			<false/>
+			<key>id</key>
+			<string>pause</string>
+			<key>shortTitle</key>
+			<string>Pause mounting</string>
+			<key>symbol</key>
+			<string>pause.circle</string>
+			<key>title</key>
+			<string>Pause or resume keeping shares mounted</string>
+		</dict>
+		<dict>
+			<key>activates</key>
+			<true/>
+			<key>id</key>
+			<string>shares</string>
+			<key>shortTitle</key>
+			<string>Shares</string>
+			<key>symbol</key>
+			<string>externaldrive</string>
+			<key>title</key>
+			<string>Show shares</string>
+		</dict>
+	</array>
 </dict>
 </plist>

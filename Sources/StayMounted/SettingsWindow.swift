@@ -48,6 +48,9 @@ final class SettingsWindow {
 /// The Dock icon's menu, and what happens when the app is opened again.
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
+    /// Runs a `staymounted://` URL; set by StayMountedApp.init, which owns the model.
+    static var onURL: ((URL) -> Void)?
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         // A menu bar app; it has a Dock icon only if the user turned one on.
         if AppPresence.showInDock { AppPresence.applyDock() }
@@ -76,5 +79,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc func showShares() {
         SettingsWindow.shares.show()
+    }
+
+    /// `staymounted://mount-all`, `pause` (pause or resume keeping everything mounted) and
+    /// `shares` (from ToolHUD, Shortcuts or a script); anything else opens Settings.
+    func application(_ application: NSApplication, open urls: [URL]) {
+        for url in urls where url.scheme == "staymounted" {
+            switch url.host {
+            case "mount-all", "pause": Self.onURL?(url)
+            case "shares": showShares()
+            default: showSettings()
+            }
+        }
     }
 }

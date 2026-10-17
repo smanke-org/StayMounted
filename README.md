@@ -50,6 +50,9 @@ Requires macOS 26 or later. Signed with Developer ID and notarized by Apple.
   before remounting it. Its *Keep ejected* button pauses that share until you resume it.
   Shares lost to sleep or a network change come back without asking.
 - **Pause anytime.** Pause a single share, or all of them, from the menu.
+- **URLs** for ToolHUD, Shortcuts or scripts: `staymounted://mount-all` mounts every missing
+  share now, `staymounted://pause` pauses or resumes all of them, and `staymounted://shares`
+  shows the shares.
 - **Settings in their own window.** Choose **Settings…** from the menu (or press ⌘, while
   StayMounted has a Dock icon) for Open at Login, asking before remounting after an eject,
   where StayMounted appears, settings sync and updates.
