@@ -63,7 +63,7 @@ Requires macOS 26 or later. Signed with Developer ID and notarized by Apple.
 
 ## Updates
 
-StayMounted checks GitHub for a new release shortly after it starts and every 30 minutes.
+StayMounted checks GitHub for a new release once a day, or as often as you choose in Settings (a number of hours, days, weeks or months).
 *When an update is available* in Settings decides what happens:
 
 - **Ask me first** (the default): a notification and *Update to …* in the menu; nothing

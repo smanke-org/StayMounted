@@ -33,6 +33,9 @@ struct SyncUpdateSections: View {
             Picker("When an update is available", selection: $updater.policy) {
                 ForEach(UpdatePolicy.allCases, id: \.self) { Text($0.title).tag($0) }
             }
+            if updater.policy != .off {
+                UpdateIntervalPicker(interval: $updater.interval)
+            }
             if let staged = updater.staged {
                 LabeledContent("Version \(staged.version) is ready") {
                     Button("Install Now") { updater.installNow() }
@@ -63,9 +66,9 @@ struct SyncUpdateSections: View {
     private var updateFooter: String {
         switch updater.policy {
         case .automatic:
-            return "StayMounted checks when it opens and every 30 minutes after. A new version installs itself when no share is being mounted or waiting on an eject, no app is presenting or keeping the screen awake, and your Mac hasn't been used for 2 minutes. You'll get a notification when it's done."
+            return "StayMounted checks \(updater.interval.phrase). A new version installs itself when no share is being mounted or waiting on an eject, no app is presenting or keeping the screen awake, and your Mac hasn't been used for 2 minutes. You'll get a notification when it's done."
         case .ask:
-            return "StayMounted checks when it opens and every 30 minutes after, and sends a notification when a new version is out. Nothing installs until you choose to."
+            return "StayMounted checks \(updater.interval.phrase) and sends a notification when a new version is out. Nothing installs until you choose to."
         case .off:
             return "StayMounted won't look for updates on its own. Use Check Now whenever you like."
         }
