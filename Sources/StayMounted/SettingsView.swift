@@ -30,6 +30,7 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
             }
 
+            AppearanceSection(appName: "StayMounted")
             Section("Dock and menu bar") {
                 Toggle("Show in Dock", isOn: $settings.showInDock)
                     .help("Adds a Dock icon whose right-click menu opens Settings.")

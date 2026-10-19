@@ -12,7 +12,7 @@
 
 import AppKit
 
-let textColor = NSColor.black
+let textColor = NSColor.white
 
 func renderIcon(includeName: Bool) -> NSImage {
 let canvas: CGFloat = 1024
@@ -137,7 +137,7 @@ func drawSymbol(_ symbol: String, in tile: CGRect, includeName: Bool, ctx: CGCon
     func font(_ size: CGFloat) -> NSFont { NSFont.systemFont(ofSize: size, weight: .bold) }
     func line(_ text: String, _ size: CGFloat) -> CTLine {
         CTLineCreateWithAttributedString(NSAttributedString(string: text, attributes: [
-            .font: font(size), .foregroundColor: NSColor.black,
+            .font: font(size), .foregroundColor: NSColor.white,
         ]))
     }
     func ink(_ text: String, _ size: CGFloat) -> CGRect {

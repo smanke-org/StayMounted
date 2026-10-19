@@ -37,6 +37,8 @@ final class AppModel {
             return nil
         }
         SettingsSync.shared.onApply = { AppSettings.shared.reload() }
+        // NSApp exists only once the app has started.
+        DispatchQueue.main.async { AppAppearance.start() }
         if Self.newInstall { SettingsSync.shared.adoptOnNewInstall() }
         SettingsSync.shared.start()
         AutoUpdater.shared.start()
