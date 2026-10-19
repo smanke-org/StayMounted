@@ -24,6 +24,11 @@ final class AppModel {
         gracePanel.onRemount = { [weak self] ids in self?.keeper.remountAfterEject(ids) }
         gracePanel.onKeepEjected = { [weak self] ids in self?.keeper.keepEjected(ids) }
 
+        #if DEBUG
+        // A Help test run shares the installed app's settings, so it must not start keeping
+        // shares mounted alongside it.
+        if ProcessInfo.processInfo.environment["STAYMOUNTED_DEBUG_HELP_TEST"] != nil { return }
+        #endif
         Diagnostics.note("launch \(AppInfo.displayVersion) from \(Bundle.main.bundlePath)")
         keeper.start()
         launchAtLogin.enableOnFirstRun()

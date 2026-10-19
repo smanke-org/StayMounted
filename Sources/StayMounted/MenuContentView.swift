@@ -214,6 +214,9 @@ struct MenuContentView: View {
                 }
             }
             #endif
+            MenuButton(title: "StayMounted Help", systemImage: nil) {
+                HelpWindow.shared.show()
+            }
             MenuButton(title: "Settings…", systemImage: nil) {
                 SettingsWindow.shared.show()
             }

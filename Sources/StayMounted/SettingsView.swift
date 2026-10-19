@@ -51,6 +51,13 @@ struct SettingsView: View {
             // iCloud Drive, so these only exist here.
             SyncUpdateSections()
             #endif
+
+            // The round Help button in the corner, as macOS does.
+            HStack {
+                Spacer()
+                HelpButton(topic: "getting-started").fixedSize()
+            }
+            .listRowBackground(Color.clear)
         }
         .formStyle(.grouped)
         .onAppear { launchAtLogin.refresh() }

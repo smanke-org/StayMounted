@@ -52,6 +52,10 @@ struct StayMountedApp: App {
                 // Right below About: the developer's site, which lists every app.
                 Button("Our other apps…") { if let url = URL(string: "https://stevemanke.com/") { NSWorkspace.shared.open(url) } }
             }
+            CommandGroup(replacing: .help) {
+                Button("StayMounted Help") { HelpWindow.shared.show() }
+                    .keyboardShortcut("?", modifiers: .command)
+            }
             CommandGroup(replacing: .appSettings) {
                 Button("Settings…") { SettingsWindow.shared.show() }
                     .keyboardShortcut(",", modifiers: .command)
