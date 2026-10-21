@@ -53,6 +53,7 @@ final class AppSettings {
         confirmAfterEject = defaults.bool(forKey: "confirmAfterEject")
         if showInDock != AppPresence.showInDock { showInDock = AppPresence.showInDock }
         if showInMenuBar != AppPresence.showInMenuBar { showInMenuBar = AppPresence.showInMenuBar }
+        MenuHub.shared.reload()
     }
 
     private init() {

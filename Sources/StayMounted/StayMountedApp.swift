@@ -5,6 +5,7 @@ struct StayMountedApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @State private var model: AppModel
     @State private var settings = AppSettings.shared
+    @State private var hub = MenuHub.shared
 
     init() {
         #if !APPSTORE
@@ -19,6 +20,11 @@ struct StayMountedApp: App {
             // Scrolls once there are more shares than fit on the screen.
             AnyView(ScrollView { MenuContentView(keeper: model.keeper) })
         }
+        #if !APPSTORE
+        // A sandboxed build can't name the message port, so the App Store version stays out.
+        let hubMenu = HubMenu(keeper: model.keeper) { MenuBarLabel.symbol(keeper: model.keeper) }
+        hubMenu.start()
+        #endif
         AppDelegate.onURL = { url in
             let keeper = model.keeper
             switch url.host {
@@ -40,7 +46,10 @@ struct StayMountedApp: App {
 
     var body: some Scene {
         // The panel can remove the menu bar icon; the app then lives in the Dock, or nowhere.
-        MenuBarExtra(isInserted: $settings.showInMenuBar) {
+        // ToolHUD can also take it into its own menu while it runs; that never changes the
+        // setting, so the icon comes back when ToolHUD quits.
+        MenuBarExtra(isInserted: Binding(get: { settings.showInMenuBar && !hub.isHosted },
+                                         set: { if !hub.isHosted { settings.showInMenuBar = $0 } })) {
             MenuContentView(keeper: model.keeper)
         } label: {
             MenuBarLabel(keeper: model.keeper)
@@ -74,7 +83,11 @@ struct MenuBarLabel: View {
         settings.shares.map { keeper.status(of: $0) }
     }
 
-    private var symbol: String {
+    private var symbol: String { Self.symbol(keeper: keeper) }
+
+    static func symbol(keeper: MountKeeper) -> String {
+        let settings = AppSettings.shared
+        let statuses = settings.shares.map { keeper.status(of: $0) }
         if settings.pausedAll { return "externaldrive.badge.minus" }
         let active = statuses.filter { $0 != .paused }
         if active.contains(where: \.needsAttention) { return "externaldrive.badge.exclamationmark" }

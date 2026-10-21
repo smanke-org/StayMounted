@@ -19,6 +19,22 @@ enum ShareStatus: Equatable {
 
     var isMounted: Bool { if case .mounted = self { true } else { false } }
 
+    /// As the panel's share rows (and ToolHUD's submenu) put it.
+    var label: String {
+        switch self {
+        case .mounted: "Mounted"
+        case .checking: "Looking for server…"
+        case .mounting: "Mounting…"
+        case .waitingForServer: "Waiting for server"
+        case .needsSignIn: "Sign in needed"
+        case .failed(let message): message
+        case .ejectPending: "Ejected — remounting shortly"
+        case .paused: "Paused"
+        case .pausedAll: "Paused"
+        case .notMounted: "Not mounted"
+        }
+    }
+
     var needsAttention: Bool {
         switch self {
         case .needsSignIn, .failed: true

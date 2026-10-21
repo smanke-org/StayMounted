@@ -252,20 +252,7 @@ private struct ShareRow: View {
 
     @State private var isHovering = false
 
-    private var statusText: String {
-        switch status {
-        case .mounted: "Mounted"
-        case .checking: "Looking for server…"
-        case .mounting: "Mounting…"
-        case .waitingForServer: "Waiting for server"
-        case .needsSignIn: "Sign in needed"
-        case .failed(let message): message
-        case .ejectPending: "Ejected — remounting shortly"
-        case .paused: "Paused"
-        case .pausedAll: "Paused"
-        case .notMounted: "Not mounted"
-        }
-    }
+    private var statusText: String { status.label }
 
     private var appsText: String? {
         switch share.apps.count {

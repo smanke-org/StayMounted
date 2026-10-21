@@ -52,6 +52,7 @@ enum Help {
                 ("Warning", "A share needs you, for example to sign in"),
                 ("Drive with a minus", "Remounting is paused"),
             ]),
+            .tip("While ToolHUD is running, StayMounted's shares and actions move into ToolHUD's menu bar menu as a submenu, and the icon here steps aside until ToolHUD quits. Show Shares… there opens the full list. To keep the icon, turn off \"Put in ToolHUD's menu while ToolHUD is running\" in Settings."),
         ]),
 
         HelpTopic(id: "shares", title: "Managing Shares", symbol: "externaldrive.connected.to.line.below", blocks: [

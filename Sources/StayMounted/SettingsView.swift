@@ -7,6 +7,7 @@ struct SettingsView: View {
     let launchAtLogin: LaunchAtLogin
 
     @State private var settings = AppSettings.shared
+    @State private var hub = MenuHub.shared
 
     var body: some View {
         Form {
@@ -35,6 +36,10 @@ struct SettingsView: View {
                 Toggle("Show in Dock", isOn: $settings.showInDock)
                     .help("Adds a Dock icon whose right-click menu opens Settings.")
                 Toggle("Show in menu bar", isOn: $settings.showInMenuBar)
+                #if !APPSTORE
+                Toggle("Put in ToolHUD’s menu while ToolHUD is running", isOn: $hub.foldIntoToolHUD)
+                    .help("ToolHUD shows StayMounted’s shares and actions as a submenu of its own, and StayMounted’s icon leaves the menu bar until ToolHUD quits.")
+                #endif
                 if !settings.showInDock && !settings.showInMenuBar {
                     Text(AppPresence.hiddenEverywhereNote(appName: "StayMounted", settingsName: "its shares in a window"))
                         .font(.caption)
