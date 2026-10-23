@@ -100,3 +100,7 @@ swift test                # unit tests for StayMountedKit
 
 Diagnostics are written to `~/Library/Logs/StayMounted.log`. Set `STAYMOUNTED_UI_PREVIEW=1`
 to open the menu's contents in an ordinary window.
+
+## License
+
+© 2026 Steve Manke. All rights reserved.
