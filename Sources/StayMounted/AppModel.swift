@@ -25,9 +25,10 @@ final class AppModel {
         gracePanel.onKeepEjected = { [weak self] ids in self?.keeper.keepEjected(ids) }
 
         #if DEBUG
-        // A Help test run shares the installed app's settings, so it must not start keeping
-        // shares mounted alongside it.
-        if ProcessInfo.processInfo.environment["STAYMOUNTED_DEBUG_HELP_TEST"] != nil { return }
+        // A Help or quit test run shares the installed app's settings, so it must not start
+        // keeping shares mounted alongside it.
+        if ProcessInfo.processInfo.environment["STAYMOUNTED_DEBUG_HELP_TEST"] != nil
+            || ProcessInfo.processInfo.environment["STAYMOUNTED_DEBUG_QUIT_TEST"] != nil { return }
         #endif
         Diagnostics.note("launch \(AppInfo.displayVersion) from \(Bundle.main.bundlePath)")
         keeper.start()

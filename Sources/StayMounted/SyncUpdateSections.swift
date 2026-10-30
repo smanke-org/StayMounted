@@ -26,7 +26,7 @@ struct SyncUpdateSections: View {
         } header: {
             Text("iCloud")
         } footer: {
-            Text("Asking before remounting, the update choice and where StayMounted appears follow you to every Mac signed in to the same iCloud account with sync turned on. The shares you keep mounted, and the apps they open, stay on each Mac.")
+            Text("Asking before remounting or quitting, the update choice and where StayMounted appears follow you to every Mac signed in to the same iCloud account with sync turned on. The shares you keep mounted, and the apps they open, stay on each Mac.")
                 .font(.caption).foregroundStyle(.secondary)
         }
         Section {

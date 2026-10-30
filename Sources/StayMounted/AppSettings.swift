@@ -16,6 +16,9 @@ final class AppSettings {
     /// likely by hand. Off remounts at once, as if it had dropped.
     var confirmAfterEject: Bool { didSet { defaults.set(confirmAfterEject, forKey: "confirmAfterEject") } }
 
+    /// Quitting asks first, so a stray ⌘Q doesn't stop shares being kept mounted.
+    var confirmQuit: Bool { didSet { defaults.set(confirmQuit, forKey: "confirmQuit") } }
+
     /// A Dock icon whose right-click menu opens Settings. Off by default.
     var showInDock: Bool = AppPresence.showInDock {
         didSet {
@@ -51,6 +54,7 @@ final class AppSettings {
     /// Re-reads the synced settings after another Mac's were adopted.
     func reload() {
         confirmAfterEject = defaults.bool(forKey: "confirmAfterEject")
+        confirmQuit = defaults.bool(forKey: "confirmQuit")
         if showInDock != AppPresence.showInDock { showInDock = AppPresence.showInDock }
         if showInMenuBar != AppPresence.showInMenuBar { showInMenuBar = AppPresence.showInMenuBar }
         MenuHub.shared.reload()
@@ -60,6 +64,7 @@ final class AppSettings {
         defaults.register(defaults: [
             "pausedAll": false,
             "confirmAfterEject": true,
+            "confirmQuit": true,
             "checkForUpdatesAtLaunch": true,
             "didOfferLaunchAtLogin": false,
         ])
@@ -71,6 +76,7 @@ final class AppSettings {
         }
         pausedAll = defaults.bool(forKey: "pausedAll")
         confirmAfterEject = defaults.bool(forKey: "confirmAfterEject")
+        confirmQuit = defaults.bool(forKey: "confirmQuit")
         checkForUpdatesAtLaunch = defaults.bool(forKey: "checkForUpdatesAtLaunch")
         skippedUpdateVersion = defaults.string(forKey: "skippedUpdateVersion")
         didOfferLaunchAtLogin = defaults.bool(forKey: "didOfferLaunchAtLogin")

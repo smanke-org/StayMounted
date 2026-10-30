@@ -39,7 +39,7 @@ final class SettingsSync: ObservableObject {
         "showInMenuBar",
         MenuHub.foldKey,
         AppAppearance.key,
-        "confirmAfterEject", UpdatePolicy.key, UpdateInterval.valueKey, UpdateInterval.unitKey,
+        "confirmAfterEject", "confirmQuit", UpdatePolicy.key, UpdateInterval.valueKey, UpdateInterval.unitKey,
     ]
 
     /// What each setting is when this Mac has never changed it, for settings without a

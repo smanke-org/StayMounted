@@ -25,6 +25,8 @@ struct SettingsView: View {
                             .foregroundStyle(.orange)
                     }
                 }
+                Toggle("Ask before quitting", isOn: $settings.confirmQuit)
+                    .help("Quitting StayMounted asks first, so a stray ⌘Q doesn't stop shares being kept mounted.")
                 Toggle("Ask before remounting a share I ejected", isOn: $settings.confirmAfterEject)
                 Text("Off remounts an ejected share right away, as if the network had dropped it.")
                     .font(.caption)

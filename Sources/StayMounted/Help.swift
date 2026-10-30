@@ -53,6 +53,7 @@ enum Help {
                 ("Drive with a minus", "Remounting is paused"),
             ]),
             .tip("While ToolHUD is running, StayMounted's shares and actions move into ToolHUD's menu bar menu as a submenu, and the icon here steps aside until ToolHUD quits. Show Shares… there opens the full list. To keep the icon, turn off \"Put in ToolHUD's menu while ToolHUD is running\" in Settings."),
+            .tip("Quitting asks first, since shares that drop aren't remounted while StayMounted is closed. Turn off \"Ask before quitting\" in Settings › General, or tick \"Don't ask again\" when it asks."),
         ]),
 
         HelpTopic(id: "shares", title: "Managing Shares", symbol: "externaldrive.connected.to.line.below", blocks: [
@@ -88,7 +89,7 @@ enum Help {
         ]),
 
         HelpTopic(id: "settings", title: "Settings", symbol: "gearshape", blocks: [
-            .text("Settings chooses login, the eject countdown, whether StayMounted shows in the Dock and the menu bar, the appearance, syncing settings with your other Macs, and updates. With the menu bar icon hidden, open StayMounted again from Finder or Spotlight to see your shares in a window."),
+            .text("Settings chooses login, asking before quitting, the eject countdown, whether StayMounted shows in the Dock and the menu bar, the appearance, syncing settings with your other Macs, and updates. With the menu bar icon hidden, open StayMounted again from Finder or Spotlight to see your shares in a window."),
         ]),
 
         HelpTopic(id: "automation", title: "Automation", symbol: "gearshape.2", blocks: [
