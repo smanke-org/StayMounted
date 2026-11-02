@@ -99,6 +99,7 @@ enum Help {
                 ("staymounted://pause", "Pause or resume all remounting"),
             ]),
             .text("Use these links from Shortcuts, scripts or a launcher. ToolHUD's StayMounted buttons use them."),
+            .tip("With \"Show which features are on\" turned on in ToolHUD, its Pause button lights up while remounting is paused."),
         ]),
 
         HelpTopic(id: "troubleshooting", title: "Troubleshooting", symbol: "wrench.and.screwdriver", blocks: [

@@ -54,7 +54,7 @@ Requires macOS 26 or later. Signed with Developer ID and notarized by Apple.
 - **Pause anytime.** Pause a single share, or all of them, from the menu.
 - **URLs** for ToolHUD, Shortcuts or scripts: `staymounted://mount-all` mounts every missing
   share now, `staymounted://pause` pauses or resumes all of them, and `staymounted://shares`
-  shows the shares.
+  shows the shares. ToolHUD's Pause button lights up while remounting is paused.
 - **Settings in their own window.** Choose **Settings…** from the menu (or press ⌘, while
   StayMounted has a Dock icon) for Open at Login, asking before remounting after an eject,
   where StayMounted appears, settings sync and updates.
@@ -78,7 +78,7 @@ StayMounted checks GitHub for a new release once a day, or as often as you choos
 *When an update is available* in Settings decides what happens:
 
 - **Ask me first** (the default): a notification and *Update to …* in the menu; nothing
-  installs until you click it.
+  installs until you click it. The update window shows what's new in the latest releases.
 - **Install automatically**: the update is downloaded and checked right away, then installed
   once no share is being mounted, no eject is waiting for an answer, no app is presenting or
   keeping the display awake, and the Mac hasn't been used for 2 minutes.
