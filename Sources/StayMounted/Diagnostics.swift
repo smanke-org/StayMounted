@@ -14,6 +14,12 @@ enum Diagnostics {
     private static let maximumBytes = 256 * 1024
 
     private static let url: URL? = {
+        #if DEBUG
+        // A test copy of the agent CLI logs beside its socket, not into the real app's log.
+        if AgentSocket.isTestRun, let store = ProcessInfo.processInfo.environment["APP_STORE"] {
+            return URL(fileURLWithPath: store + ".log")
+        }
+        #endif
         guard let library = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first else { return nil }
         let logs = library.appending(path: "Logs", directoryHint: .isDirectory)
         try? FileManager.default.createDirectory(at: logs, withIntermediateDirectories: true)

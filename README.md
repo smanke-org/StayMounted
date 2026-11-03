@@ -55,6 +55,8 @@ Requires macOS 26 or later. Signed with Developer ID and notarized by Apple.
 - **URLs** for ToolHUD, Shortcuts or scripts: `staymounted://mount-all` mounts every missing
   share now, `staymounted://pause` pauses or resumes all of them, and `staymounted://shares`
   shows the shares. ToolHUD's Pause button lights up while remounting is paused.
+- **Command line and AI agents.** `staymounted` drives the running app from Terminal, scripts
+  or AI agents; see [Command line and AI agents](#command-line-and-ai-agents).
 - **Settings in their own window.** Choose **Settings…** from the menu (or press ⌘, while
   StayMounted has a Dock icon) for Open at Login, asking before remounting after an eject,
   where StayMounted appears, settings sync and updates.
@@ -62,6 +64,33 @@ Requires macOS 26 or later. Signed with Developer ID and notarized by Apple.
   pick where StayMounted appears. Right-click the Dock icon for **Shares…** or **Settings…**.
   With the menu bar icon off, clicking the Dock icon, or opening StayMounted again from
   Applications or Spotlight, shows your shares in a window.
+
+## Command line and AI agents
+
+StayMounted is also a command line tool, so scripts and AI agents (Claude Code, Codex) can see
+each share's state and last error, add or stop watching shares, mount, unmount or remount one
+now, and pause or resume keeping them mounted. Commands run in the open app, and the menu bar
+panel shows each change at once. Link it once to type `staymounted`:
+
+```bash
+ln -s /Applications/StayMounted.app/Contents/MacOS/StayMounted ~/.local/bin/staymounted
+```
+
+```bash
+staymounted help
+staymounted shares list --json
+staymounted shares mount Media
+staymounted shares unmount Media --yes
+```
+
+Every command takes `--json`. Removing, unmounting and remounting a share only show what they
+would do until you add `--yes`. Passwords are never accepted or shown: StayMounted keeps using
+the ones Finder saved in your keychain. For MCP apps such as Claude Desktop, the same commands
+are served by `/Applications/StayMounted.app/Contents/MacOS/StayMounted mcp`:
+
+```bash
+claude mcp add --scope user staymounted -- /Applications/StayMounted.app/Contents/MacOS/StayMounted mcp
+```
 
 ## Screenshots
 

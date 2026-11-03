@@ -1,6 +1,6 @@
 import SwiftUI
 
-@main
+/// Started from main.swift, after the agent CLI check.
 struct StayMountedApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @State private var model: AppModel
@@ -22,22 +22,20 @@ struct StayMountedApp: App {
         }
         #if !APPSTORE
         // A sandboxed build can't name the message port, so the App Store version stays out.
-        let hubMenu = HubMenu(keeper: model.keeper) { MenuBarLabel.symbol(keeper: model.keeper) }
-        hubMenu.start()
-        // ToolHUD lights its Pause button while keeping shares mounted is paused.
-        ToolHUDFeatureStates.start { ["pause": AppSettings.shared.pausedAll] }
+        // A test copy of the agent CLI (Debug, APP_STORE) starts nothing but its socket.
+        if !AgentSocket.isTestRun {
+            let hubMenu = HubMenu(keeper: model.keeper) { MenuBarLabel.symbol(keeper: model.keeper) }
+            hubMenu.start()
+            // ToolHUD lights its Pause button while keeping shares mounted is paused.
+            ToolHUDFeatureStates.start { ["pause": AppSettings.shared.pausedAll] }
+        }
         #endif
         AppDelegate.onURL = { url in
             let keeper = model.keeper
             switch url.host {
             case "mount-all":
                 // Every watched share that's simply missing; paused ones stay paused.
-                for share in AppSettings.shared.shares {
-                    switch keeper.status(of: share) {
-                    case .notMounted, .waitingForServer, .failed: keeper.mountNow(share, interactive: false)
-                    default: break
-                    }
-                }
+                keeper.mountAllMissing()
             case "pause":
                 keeper.setPausedAll(!AppSettings.shared.pausedAll)
             default:
@@ -49,9 +47,10 @@ struct StayMountedApp: App {
     var body: some Scene {
         // The panel can remove the menu bar icon; the app then lives in the Dock, or nowhere.
         // ToolHUD can also take it into its own menu while it runs; that never changes the
-        // setting, so the icon comes back when ToolHUD quits.
-        MenuBarExtra(isInserted: Binding(get: { settings.showInMenuBar && !hub.isHosted },
-                                         set: { if !hub.isHosted { settings.showInMenuBar = $0 } })) {
+        // setting, so the icon comes back when ToolHUD quits. A test copy of the agent CLI
+        // has no icon, and never writes the setting (it belongs to the installed app).
+        MenuBarExtra(isInserted: Binding(get: { settings.showInMenuBar && !hub.isHosted && !AgentSocket.isTestRun },
+                                         set: { if !hub.isHosted, !AgentSocket.isTestRun { settings.showInMenuBar = $0 } })) {
             MenuContentView(keeper: model.keeper)
         } label: {
             MenuBarLabel(keeper: model.keeper)

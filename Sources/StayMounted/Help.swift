@@ -100,6 +100,15 @@ enum Help {
             ]),
             .text("Use these links from Shortcuts, scripts or a launcher. ToolHUD's StayMounted buttons use them."),
             .tip("With \"Show which features are on\" turned on in ToolHUD, its Pause button lights up while remounting is paused."),
+            .heading("Command line and AI agents"),
+            .text("StayMounted is also a command line tool, so scripts and AI agents such as Claude Code or Codex can see each share's state and last error, add or stop watching shares, mount, unmount or remount one now, and pause or resume. Commands run in the open app, and the panel shows each change at once. Removing, unmounting and remounting need --yes. Passwords are never accepted or shown: StayMounted keeps using the ones Finder saved in your keychain."),
+            .keys([
+                ("staymounted help", "List every command and its options"),
+                ("staymounted shares list", "Each watched share: mounted or not, and its last error"),
+                ("staymounted shares mount <share>", "Mount a share now, like Mount Now"),
+                ("staymounted mcp", "Offer the same commands to MCP apps, such as Claude Desktop"),
+            ]),
+            .text("To type staymounted in Terminal, link it once: ln -s /Applications/StayMounted.app/Contents/MacOS/StayMounted ~/.local/bin/staymounted (with ~/.local/bin on your PATH). MCP apps take the full path to that program, followed by mcp."),
         ]),
 
         HelpTopic(id: "troubleshooting", title: "Troubleshooting", symbol: "wrench.and.screwdriver", blocks: [

@@ -146,6 +146,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         #endif
         #endif
+        #if DEBUG
+        // A test copy of the agent CLI shows no Dock icon.
+        if AgentSocket.isTestRun { return }
+        #endif
         // A menu bar app; it has a Dock icon only if the user turned one on.
         if AppPresence.showInDock { AppPresence.applyDock() }
     }

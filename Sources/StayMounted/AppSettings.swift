@@ -54,7 +54,19 @@ final class AppSettings {
     /// After that it is the user's setting, and turning it off sticks.
     var didOfferLaunchAtLogin: Bool { didSet { defaults.set(didOfferLaunchAtLogin, forKey: "didOfferLaunchAtLogin") } }
 
-    private let defaults = UserDefaults.standard
+    private let defaults = AppSettings.store
+
+    /// Where the shares and settings live: the app's own defaults, or for a test copy of
+    /// the agent CLI (a Debug build run with APP_STORE) a domain of its own, so it never
+    /// reads or writes the installed app's.
+    static let store: UserDefaults = {
+        #if DEBUG
+        if AgentSocket.isTestRun, let suite = UserDefaults(suiteName: testSuiteName) { return suite }
+        #endif
+        return .standard
+    }()
+
+    static let testSuiteName = "com.smanke.StayMounted.agenttest"
 
     /// Re-reads the synced settings after another Mac's were adopted.
     func reload() {

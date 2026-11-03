@@ -15,8 +15,22 @@ final class AppModel {
     @ObservationIgnored private let gracePanel = EjectGracePanel()
     @ObservationIgnored private var previewWindow: NSWindow?
 
+    /// The running app's model, for the agent CLI's commands.
+    private(set) static var current: AppModel?
+
     init() {
         launcher = AppLauncher(keeper: keeper)
+        Self.current = self
+        #if DEBUG
+        // A test copy of the agent CLI (APP_STORE): its own shares and settings
+        // (AppSettings), and the agent socket. Nothing else starts: no remounting timer,
+        // network or wake observers, login item, sync, updater or ToolHUD menu, and
+        // MountKeeper never mounts, unmounts or probes in a test copy.
+        if AgentSocket.isTestRun {
+            AgentSocket.listen { AgentRouter.handle($0) }
+            return
+        }
+        #endif
         // Before start(): shares already mounted at launch report as just mounted.
         keeper.onShareMounted = { [launcher] share in launcher.shareMounted(share) }
         LaunchItemsWindow.shared.launcher = launcher
@@ -32,6 +46,8 @@ final class AppModel {
             || ProcessInfo.processInfo.environment["STAYMOUNTED_DEBUG_UPDATE_NOTES"] != nil { return }
         #endif
         Diagnostics.note("launch \(AppInfo.displayVersion) from \(Bundle.main.bundlePath)")
+        // `staymounted` and its MCP server talk to the app through this.
+        AgentSocket.listen { AgentRouter.handle($0) }
         keeper.start()
         launchAtLogin.enableOnFirstRun()
         #if !APPSTORE

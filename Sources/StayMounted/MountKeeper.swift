@@ -97,6 +97,11 @@ final class MountKeeper {
     @ObservationIgnored private var timer: Timer?
     @ObservationIgnored private let pathMonitor = NWPathMonitor()
     @ObservationIgnored private var observers: [NSObjectProtocol] = []
+    /// Shares the agent CLI is unmounting to mount again: their unmount is expected, so it
+    /// neither asks about remounting nor waits for backoff.
+    @ObservationIgnored private var remountAfterUnmount: Set<UUID> = []
+    /// Why the last unmount asked for by the agent CLI failed, per share, until it next works.
+    @ObservationIgnored private(set) var unmountErrors: [UUID: String] = [:]
 
     /// How often to look again even when nothing has happened. Cheap: a mount table read,
     /// plus a probe only for shares that are missing and due.
@@ -280,6 +285,22 @@ final class MountKeeper {
         }
     }
 
+    /// `staymounted://mount-all` and `staymounted shares mount --all`: every watched share
+    /// that's simply missing, now. Paused ones stay paused. Returns the shares it tried.
+    @discardableResult
+    func mountAllMissing() -> [WatchedShare] {
+        var tried: [WatchedShare] = []
+        for share in settings.shares {
+            switch status(of: share) {
+            case .notMounted, .waitingForServer, .failed:
+                mountNow(share, interactive: false)
+                tried.append(share)
+            default: break
+            }
+        }
+        return tried
+    }
+
     func setPausedAll(_ paused: Bool) {
         settings.pausedAll = paused
         Diagnostics.note(paused ? "paused all" : "resumed all")
@@ -306,6 +327,12 @@ final class MountKeeper {
                          + "(\(byNetwork ? "network/sleep" : "likely by hand")"
                          + (lastDisruption == .distantPast ? ")" : ", \(Int(sinceDisruption))s since last network change or sleep)"))
 
+        if remountAfterUnmount.remove(id) != nil {
+            // `shares remount` from the agent CLI: put it straight back.
+            clearBackoff(id)
+            sweep(reason: "remount", after: 1)
+            return
+        }
         guard !share.paused, !settings.pausedAll else { return }
         if byNetwork || !settings.confirmAfterEject {
             clearBackoff(id)
@@ -330,6 +357,46 @@ final class MountKeeper {
             setPaused(share, true)
         }
         ejectPending.subtract(ids)
+    }
+
+    // MARK: - Unmounting
+
+    /// Unmount (and remount) from the agent CLI; the app's own menu has no unmount, since
+    /// Finder's Eject does that. Without `remount` the share is paused first, as "Keep
+    /// ejected" does, so it isn't put straight back; with it, the share is mounted again
+    /// once the unmount is through. Returns the mount point, or nil if it isn't mounted.
+    /// The unmount itself finishes later; a failure (a file still open, say) lands in
+    /// `unmountErrors` and in the log.
+    func unmount(_ share: WatchedShare, thenRemount remount: Bool) -> String? {
+        refreshMounts()
+        guard let mount = mount(for: share) else { return nil }
+        let wasPaused = share.paused
+        unmountErrors[share.id] = nil
+        ejectPending.remove(share.id)
+        if remount { remountAfterUnmount.insert(share.id) } else if !wasPaused { setPaused(share, true) }
+        Diagnostics.note("\(remount ? "remounting" : "unmounting") \(share.displayName) at \(mount.mountPoint) (agent)")
+        #if DEBUG
+        // A test copy of the agent CLI never touches the real file system.
+        if AgentSocket.isTestRun { return mount.mountPoint }
+        #endif
+        let id = share.id
+        let url = URL(fileURLWithPath: mount.mountPoint)
+        Task { @MainActor [weak self] in
+            do {
+                try await FileManager.default.unmountVolume(at: url, options: [.withoutUI])
+            } catch {
+                guard let self else { return }
+                let message = error.localizedDescription
+                self.unmountErrors[id] = message
+                self.remountAfterUnmount.remove(id)
+                // Still mounted: undo the pause that was only there to keep it unmounted.
+                if !remount, !wasPaused, let current = self.settings.shares.first(where: { $0.id == id }) {
+                    self.setPaused(current, false)
+                }
+                Diagnostics.note("\(share.displayName): unmount failed: \(message)")
+            }
+        }
+        return mount.mountPoint
     }
 
     // MARK: - Mounting
@@ -368,6 +435,13 @@ final class MountKeeper {
 
     private func attempt(_ share: WatchedShare, interactive: Bool) async {
         guard let target = share.share, !inFlight.contains(share.id) else { return }
+        #if DEBUG
+        // A test copy of the agent CLI never probes a server or mounts anything.
+        if AgentSocket.isTestRun {
+            Diagnostics.note("test copy: not mounting \(share.displayName)")
+            return
+        }
+        #endif
         inFlight.insert(share.id)
         defer { inFlight.remove(share.id) }
 
