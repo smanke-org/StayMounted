@@ -130,7 +130,7 @@ enum Help {
             .text("Settings › Updates chooses what StayMounted does when a new version is out: install it automatically while your Mac is idle and no share is being mounted, ask you first, or not check at all. Check Now looks right away. Your shares stay mounted while it updates."),
             .heading("What's new"),
             .text("The update window shows the notes for the latest releases, with the ones you don't have yet marked New. \"Don't remind me about this version\" is ticked to begin with: click Not Now with it ticked, and StayMounted stops reminding you about that version (Check Now still offers it). Untick it to be reminded again."),
-            .text("After an update that installed itself, Settings shows what changed the next time it opens. Tick \"Don't show this again\" to put it away. What's New… beside Check Now shows the notes any time."),
+            .text("After an update that installed itself, Settings shows what changed the next time it opens. Tick \"Don't show this again\" to put it away. What's New… beside Check Now shows the notes any time, and About StayMounted shows the last 10 releases."),
         ])]
         #endif
     }

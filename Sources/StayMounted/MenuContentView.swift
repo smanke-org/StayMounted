@@ -222,7 +222,7 @@ struct MenuContentView: View {
             }
             MenuButton(title: "About StayMounted", systemImage: nil) {
                 NSApp.activate(ignoringOtherApps: true)
-                NSApp.orderFrontStandardAboutPanel(nil)
+                AppInfo.showAbout()
             }
             MenuButton(title: "Our other apps…", systemImage: nil) {
                 if let url = URL(string: "https://stevemanke.com/") { NSWorkspace.shared.open(url) }

@@ -128,7 +128,7 @@ final class HubMenu: NSObject {
 
     @objc private func showAbout() {
         NSApp.activate(ignoringOtherApps: true)
-        NSApp.orderFrontStandardAboutPanel(nil)
+        AppInfo.showAbout()
     }
 
     @objc private func showOtherApps() {
