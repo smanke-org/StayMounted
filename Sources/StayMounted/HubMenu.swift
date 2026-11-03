@@ -51,29 +51,34 @@ final class HubMenu: NSObject {
             let item = NSMenuItem(title: share.displayName, action: nil, keyEquivalent: "")
             item.state = status.isMounted ? .on : .off
             if status.needsAttention {
-                item.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: nil)
+                item.showIcon("exclamationmark.triangle")
             }
             item.submenu = submenu
             menu.addItem(item)
         }
         menu.addItem(.separator())
         menu.addItem(withTitle: "Pause All Remounting", action: #selector(togglePausedAll), target: self)
-            .state = settings.pausedAll ? .on : .off
+            .showIcon("pause.circle").state = settings.pausedAll ? .on : .off
         menu.addItem(withTitle: "Show Shares…", action: #selector(showShares), target: self)
+            .showIcon("externaldrive.connected.to.line.below")
         menu.addItem(.separator())
 
         #if !APPSTORE
         if let staged = AutoUpdater.shared.staged {
             menu.addItem(withTitle: "Update to \(staged.version) Now", action: #selector(installUpdate), target: self)
+                .showIcon("arrow.down.circle")
         } else if let pending = UpdateAvailability.shared.pending {
             menu.addItem(withTitle: "Update to \(pending)…", action: #selector(checkForUpdates), target: self)
+                .showIcon("arrow.down.circle")
         } else {
             menu.addItem(withTitle: "Check for Updates…", action: #selector(checkForUpdates), target: self)
+                .showIcon("arrow.down.circle")
         }
         #endif
         menu.addItem(withTitle: "StayMounted Help", action: #selector(showHelp), target: self)
             .image = NSImage(systemSymbolName: "questionmark.circle", accessibilityDescription: nil)
         menu.addItem(withTitle: "Settings…", action: #selector(showSettings), target: self)
+            .showIcon("gearshape")
         menu.addItem(withTitle: "About StayMounted", action: #selector(showAbout), target: self)
         menu.addItem(withTitle: "Our other apps…", action: #selector(showOtherApps), target: self)
         menu.addItem(withTitle: "Open Log", action: #selector(openLog), target: self)
